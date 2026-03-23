@@ -5,7 +5,6 @@
   <groupId>com.github.wsgtcyx</groupId>
   <artifactId>pdf-zusammenfuegen</artifactId>
   <version>0.1.0</version>
-  <name>pdf-zusammenfuegen</name>
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>

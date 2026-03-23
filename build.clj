@@ -3,7 +3,6 @@
             [clojure.string :as str]
             [clojure.tools.build.api :as b])
   (:import (java.io File FileInputStream)
-           (java.math BigInteger)
            (java.security MessageDigest)))
 
 (def lib 'com.github.wsgtcyx/pdf-zusammenfuegen)
@@ -41,6 +40,11 @@
       (spit (str path "." (checksum-extension algorithm))
             (str (digest-file file algorithm) "\n")))))
 
+(defn- normalize-pom! [path]
+  (let [content (slurp path)
+        cleaned (str/replace content #"\s*<name>pdf-zusammenfuegen</name>\n" "\n")]
+    (spit path cleaned)))
+
 (defn clean [_]
   (b/delete {:path "target"})
   nil)
@@ -77,8 +81,10 @@
                   [:tag (str "v" version)]]]})
     (b/jar {:class-dir class-dir
             :jar-file jar-file})
+    (normalize-pom! (pom-path-in-classes))
     (io/copy (io/file (pom-path-in-classes))
              (io/file pom-file))
+    (normalize-pom! pom-file)
     (write-checksums! jar-file)
     (write-checksums! pom-file)
     (println "Build abgeschlossen:" jar-file)
